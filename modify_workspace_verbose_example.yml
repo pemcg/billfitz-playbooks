@@ -6,8 +6,6 @@
   vars:
   - object: root
   - interval: 600
-  - manageiq_connection:
-      manageiq_validate_certs: false
 
   gather_facts: False
   roles:
@@ -21,21 +19,28 @@
         attribute_exists:
           object: "/ManageIQ/System/Request/call_instance"
           attribute: "::miq::parent"
+      register: attribute_exists
+      
+    - debug: msg="checked (existence) attribute:{{ attribute_exists.value }}"
 
-#    - name: "Get an attribute"
-#      manageiq_automate:
-#        workspace: "{{ workspace }}"
-#        get_attribute: object: "/ManageIQ/System/Request/call_instance"
-#          attribute: "::miq::parent"
-#
+    - name: "Get an attribute"
+      manageiq_automate:
+        workspace: "{{ workspace }}"
+        get_attribute:
+          object: "/ManageIQ/System/Request/call_instance"
+          attribute: "::miq::parent"
+      register: get_attribute
+      
+    - debug: msg="get_attribute:{{ get_attribute.value }}"
+
     - name: "Check a state_var"
       manageiq_automate:
         workspace: "{{ workspace }}"
         state_var_exists:
           attribute: "task_id"
-      register: myattributes
+      register: state_var_exists
 
-    - debug: msg="root object attributes:{{ myattributes.value }}"
+    - debug: msg="state_var_exists:{{ state_var_exists.value }}"
 
     - name: "Set a State Var"
       manageiq_automate:
@@ -51,50 +56,44 @@
       manageiq_automate:
         workspace: "{{ workspace }}"
         method_parameter_exists:
-          parameter: "task_id"
+          parameter: "this"
+      register: method_parameter_exists
+
+    - debug: msg="method_parameter_exists:{{ method_parameter_exists.value }}"
 
     - name: "Get the full list of Objects"
       manageiq_automate:
         workspace: "{{ workspace }}"
         get_object_names: yes
+      register: get_object_names
 
-      register: allobjects
-
-    - debug: msg="allobjects:{{ allobjects }}"
+    - debug: msg="get_object_names:{{ get_object_names }}"
 
     - name: "Get the list of Method Parameters"
       manageiq_automate:
         workspace: "{{ workspace }}"
         get_method_parameters: yes
-      register: method_params
+      register: get_method_parameters
+      
+    - debug: msg="get_method_parameters:{{ get_method_parameters }}"
 
     - name: "Get the list of State Vars"
       manageiq_automate:
         workspace: "{{ workspace }}"
         get_state_var_names: yes
-      register: myattributes
+      register: get_state_var_names
 
-    - debug: msg="root object attributes:{{ myattributes.value }}"
-
-    - name: "Get the full list of Object Attribute Names"
-      manageiq_automate:
-        workspace: "{{ workspace }}"
-        get_object_attribute_names:
-          object: "root"
-      register: myattributes
-
-    - debug: msg="root object attributes:{{ myattributes.value }}"
-
-    - name: "Set an attribute"
+    - debug: msg="get_state_var_names:{{ get_state_var_names.value }}"
+    
+    - name: "Set a root attribute"
       manageiq_automate:
         workspace: "{{ workspace }}"
         set_attribute:
           object: "root"
           attribute: "my_name"
-          value:  "jim"
-      register: workspace
+          value:  "pemcg"
 
-    - name: "Set attributes"
+    - name: "Set several root attributes"
       manageiq_automate:
         workspace: "{{ workspace }}"
         set_attributes:
@@ -103,7 +102,24 @@
             family_name: "timmer"
             eldest_son: "reed"
             youngest_son: "olaf"
-      register: workspace
+
+    - name: "Get the full list of root object Attribute Names"
+      manageiq_automate:
+        workspace: "{{ workspace }}"
+        get_object_attribute_names:
+          object: "root"
+      register: get_root_object_attribute_names
+
+    - debug: msg="get_root_object_attribute_names:{{ get_root_object_attribute_names.value }}"
+    
+    - name: "Get the full list of current object Attribute Names"
+      manageiq_automate:
+        workspace: "{{ workspace }}"
+        get_object_attribute_names:
+          object: "object"
+      register: get_current_object_attribute_names
+
+    - debug: msg="get_current_object_attribute_names:{{ get_current_object_attribute_names.value }}"
 
     - name: Decrypt an attribute from an object
       manageiq_automate:
@@ -115,12 +131,6 @@
 
     - debug: msg=decrypted_attribute:{{ decrypted_attribute }}
 
-    - name: Decrypt a method_parameter from an object
-      manageiq_automate:
-        workspace: "{{ workspace }}"
-        get_decrypted_method_parameter:
-          attribute: fred
-
     - name: Encrypt an object attribute
       manageiq_automate:
         workspace: "{{ workspace }}"
@@ -128,6 +138,15 @@
           object: root
           attribute: freddy
           value: 'smartvm'
+          
+    - name: Decrypt a method_parameter from an object
+      manageiq_automate:
+        workspace: "{{ workspace }}"
+        get_decrypted_method_parameter:
+          attribute: scrambled_this
+        register: decrypted_method_parameter
+
+    - debug: msg=decrypted_method_parameter:{{ decrypted_method_parameter }}
 
     - name: Grab a vmdb object
       manageiq_automate:
@@ -135,9 +154,11 @@
         get_vmdb_object:
           object: root
           attribute: miq_group
+      register: miq_group
+
+    - debug: msg=miq_group:{{ miq_group }}
 
 # New playboooks below 
-
 
     - name: "Get the full list of Object Attribute Names"
       manageiq_automate:
