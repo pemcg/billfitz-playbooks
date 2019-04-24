@@ -21,7 +21,7 @@
           attribute: "::miq::parent"
       register: attribute_exists
       
-    - debug: msg="checked (existence) attribute: {{ attribute_exists.value }}"
+    - debug: msg=checked (existence) attribute: {{ attribute_exists.value }}
 
     - name: "Get an attribute"
       manageiq_automate:
