@@ -144,7 +144,7 @@
         workspace: "{{ workspace }}"
         get_decrypted_method_parameter:
           attribute: scrambled_this
-        register: decrypted_method_parameter
+      register: decrypted_method_parameter
 
     - debug: msg=decrypted_method_parameter:{{ decrypted_method_parameter }}
 
