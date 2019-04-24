@@ -112,14 +112,14 @@
 
     - debug: msg="get_root_object_attribute_names:{{ get_root_object_attribute_names.value }}"
     
-    - name: "Get the full list of current object Attribute Names"
-      manageiq_automate:
-        workspace: "{{ workspace }}"
-        get_object_attribute_names:
-          object: "object"
-      register: get_current_object_attribute_names
-
-    - debug: msg="get_current_object_attribute_names:{{ get_current_object_attribute_names.value }}"
+    #- name: "Get the full list of current object Attribute Names"
+    #  manageiq_automate:
+    #    workspace: "{{ workspace }}"
+    #    get_object_attribute_names:
+    #      object: "object"
+    #  register: get_current_object_attribute_names
+    #
+    #- debug: msg="get_current_object_attribute_names:{{ get_current_object_attribute_names.value }}"
 
     - name: Decrypt an attribute from an object
       manageiq_automate:
