@@ -67,7 +67,7 @@
         get_object_names: yes
       register: get_object_names
 
-    - debug: msg="get_object_names: {{ get_object_names }}"
+    - debug: msg="get_object_names = {{ get_object_names }}"
 
     - name: "Get the list of Method Parameters"
       manageiq_automate:
