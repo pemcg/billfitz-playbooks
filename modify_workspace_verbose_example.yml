@@ -122,6 +122,16 @@
       register: configuration_domain_attribute_names
     
     - debug: msg="configuration_domain_attribute_names:{{ configuration_domain_attribute_names }}"
+    
+    - name: "Get an attribute from a configuration domain"
+      manageiq_automate:
+        workspace: "{{ workspace }}"
+        get_attribute:
+          object: "/Configuration/OpenShift/Parameters/default"
+          attribute: "rhel_subscription_pool"
+      register: rhel_subscription_pool
+      
+    - debug: msg="rhel_subscription_pool from configuration domain:{{ rhel_subscription_pool }}"
 
     - name: Decrypt an attribute from an object
       manageiq_automate:
